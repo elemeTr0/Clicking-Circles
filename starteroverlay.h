@@ -27,5 +27,4 @@ protected:
 private:
     QLabel *startLabel;
 };
-
 #endif // STARTOVERLAY_H

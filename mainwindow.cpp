@@ -2,13 +2,9 @@
 #include "circleGenerator.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QDialog>
-#include <QSlider>
 #include <QLabel>
-#include <QDebug>
-#include "starteroverlay.h"
 #include <QTimer>
-#include <QSettings> // Include QSettings
+#include <QSettings>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), score(0)
@@ -16,43 +12,29 @@ MainWindow::MainWindow(QWidget *parent)
     // Create central widget and main layout
     QWidget *centralWidget = new QWidget(this);
     QVBoxLayout *mainLayout = new QVBoxLayout(centralWidget);
+    mainLayout->setContentsMargins(0, 0, 0, 0); //Remove the margins
 
     // Top Bar Layout (Score, Timer, High Score)
     QHBoxLayout *topBarLayout = new QHBoxLayout();
+    topBarLayout->setContentsMargins(0, 0, 0, 0); //Remove the margins
 
     // Score Label (Top Left, Bigger Font)
     scoreLabel = new QLabel("Score: 0", this);
-    scoreLabel->setStyleSheet("font-size: 24px; font-weight: bold;");
+    scoreLabel->setStyleSheet("font-size: 24px; font-weight: bold; color: white;"); // Set the font color to white
     scoreLabel->setAlignment(Qt::AlignLeft);
     topBarLayout->addWidget(scoreLabel);
 
-    // Add Timer and High Score inside a Layout
-    QVBoxLayout *timerHighScoreLayout = new QVBoxLayout();
-
     //Time Label
     timeLabel = new QLabel("60", this);
-    timeLabel->setStyleSheet("font-size: 14px; font-weight: bold;");
+    timeLabel->setStyleSheet("font-size: 24px; font-weight: bold; color: white;"); // Set the font color to white
     timeLabel->setAlignment(Qt::AlignCenter);
+    topBarLayout->addWidget(timeLabel);
 
     //High Score Label
     highScoreLabel = new QLabel("High Score: 0", this);
-    highScoreLabel->setStyleSheet("font-size: 18px; font-weight: bold;");
+    highScoreLabel->setStyleSheet("font-size: 24px; font-weight: bold; color: white;"); // Set the font color to white
     highScoreLabel->setAlignment(Qt::AlignRight);
-
-    timerHighScoreLayout->addWidget(highScoreLabel);
-    timerHighScoreLayout->addWidget(timeLabel);
-
-    topBarLayout->addLayout(timerHighScoreLayout);
-
-    // Add stretch to push settings button to the right
-    topBarLayout->addStretch();
-
-    // Settings Button (Far Right)
-    settingsButton = new QPushButton(this);
-    settingsButton->setIcon(QIcon(":/icons/settings.png")); // Replace with your icon path
-    settingsButton->setFixedSize(32, 32);
-    settingsButton->setStyleSheet("border: none;");
-    topBarLayout->addWidget(settingsButton);
+    topBarLayout->addWidget(highScoreLabel);
 
     // Add the top bar layout to the main layout
     mainLayout->addLayout(topBarLayout);
@@ -71,14 +53,12 @@ MainWindow::MainWindow(QWidget *parent)
     mainLayout->addWidget(circleGenerator);
 
     // Set central widget and layout
-    setCentralWidget(centralWidget);
     centralWidget->setLayout(mainLayout);
-    mainLayout->setContentsMargins(0, 0, 0, 0);
+    setCentralWidget(centralWidget);
 
     // Connect signals
     connect(circleGenerator, &CircleGenerator::circleClicked, this, &MainWindow::onCircleClicked);
     connect(circleGenerator, &CircleGenerator::emptyClicked, this, &MainWindow::onEmptyClicked);
-    connect(settingsButton, &QPushButton::clicked, this, &MainWindow::openSettingsDialog);
 
     // Timer setup
     gameTimer = new QTimer(this);
@@ -95,21 +75,21 @@ MainWindow::~MainWindow()
 
 void MainWindow::updateScore(int points)
 {
-    score = qMax(0, score + points);  // Ensure score doesn't go below 0
+    score = qMax(0, score + points); // Ensure score doesn't go below 0
     scoreLabel->setText("Score: " + QString::number(score));
 }
 
 void MainWindow::onCircleClicked()
 {
     if (isGameActive) {
-        updateScore(10);  // Add 10 points when a circle is clicked
+        updateScore(10); // Add 10 points when a circle is clicked
     }
 }
 
 void MainWindow::onEmptyClicked()
 {
     if (isGameActive) {
-        updateScore(-5);  // Subtract 5 points when empty space is clicked
+        updateScore(-5); // Subtract 5 points when empty space is clicked
     }
 }
 
@@ -134,7 +114,7 @@ void MainWindow::countdownTick()
 
 void MainWindow::startGame()
 {
-    if (overlayWidget) {  //Check to prevent nullptr access
+    if (overlayWidget) { //Check to prevent nullptr access
         overlayWidget->close();
         overlayWidget->deleteLater(); // Schedule the overlay for deletion
         overlayWidget = nullptr;
@@ -143,7 +123,7 @@ void MainWindow::startGame()
     score = 0;
     updateScore(0);
     isGameActive = true;
-    gameTimer->start(100);  // Start the game with a 0.1 second interval
+    gameTimer->start(100); // Start the game with a 0.1 second interval
 }
 
 void MainWindow::updateGame()
@@ -154,35 +134,11 @@ void MainWindow::updateGame()
             gameTime = 0; // Prevent negative time
             isGameActive = false; // Stop the game
             gameTimer->stop(); // Stop the game timer
-            saveHighscore();  // Save the high score
-            close(); // Close the main window
+            saveHighscore(); // Save the high score
+            close(); // Close the main window. Consider a game over dialog instead.
         }
         timeLabel->setText(QString::number(gameTime, 'f', 0)); // Display with 0 decimal places
     }
-}
-
-void MainWindow::openSettingsDialog()
-{
-    // Create a dialog for settings
-    QDialog dialog(this);
-    dialog.setWindowTitle("Settings");
-
-    QVBoxLayout *dialogLayout = new QVBoxLayout(&dialog);
-
-    QLabel *sliderLabel = new QLabel("Mouse Sensitivity:", &dialog);
-    dialogLayout->addWidget(sliderLabel);
-
-    QSlider *sensitivitySlider = new QSlider(Qt::Horizontal, &dialog);
-    sensitivitySlider->setRange(1, 100); // Sensitivity range from 1 to 100
-    sensitivitySlider->setValue(50);     // Default value at 50
-    dialogLayout->addWidget(sensitivitySlider);
-
-    QPushButton *closeButton = new QPushButton("Close", &dialog);
-    dialogLayout->addWidget(closeButton);
-
-    connect(closeButton, &QPushButton::clicked, &dialog, &QDialog::accept);
-
-    dialog.exec(); // Open the dialog modally
 }
 
 void MainWindow::saveHighscore()

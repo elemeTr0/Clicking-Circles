@@ -6,7 +6,7 @@ StartOverlay::StartOverlay(QWidget *parent) : QWidget(parent)
     setStyleSheet("background-color: rgba(0, 0, 0, 200);"); // Semi-transparent black background
 
     startLabel = new QLabel("Click to Start", this);
-    startLabel->setStyleSheet("color: white; font-size: 24px; font-weight: bold;");
+    startLabel->setStyleSheet("color: white; font-size: 24px; font-weight: bold; background-color: transparent");
     startLabel->setAlignment(Qt::AlignCenter);
 
     setAttribute(Qt::WA_StyledBackground);

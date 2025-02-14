@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QLabel>
 #include <QPushButton>
-#include <QTimer>  // Include QTimer
+#include <QTimer> // Include QTimer
 #include "circleGenerator.h"
 #include "starteroverlay.h"
 #include "Timer.h"
@@ -21,21 +21,19 @@ private slots:
     void onCircleClicked();
     void onEmptyClicked();
     void startGame();
-    void openSettingsDialog();
     void updateGame(); // New slot for timer updates
     void startCountdown(); // New slot for countdown start
-    void countdownTick();    // New slot for countdown tick
+    void countdownTick(); // New slot for countdown tick
 
 private:
     CircleGenerator *circleGenerator;
     QLabel *scoreLabel;
     QLabel *highScoreLabel; // New label for displaying high score
-    QPushButton *settingsButton;
     StartOverlay *overlayWidget; // Overlay widget for "Click to Start"
     int score;
     Timer *timer;
-    QTimer *gameTimer;    // Timer for the game
-    double gameTime = 60;   // Time elapsed during the game
+    QTimer *gameTimer; // Timer for the game
+    double gameTime = 60; // Time elapsed during the game
     bool isGameActive;
     QTimer *countdownTimer; // Timer for the countdown
     int countdownValue; // value to count down from

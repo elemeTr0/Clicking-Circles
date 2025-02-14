@@ -14,7 +14,7 @@ CenterLabel::CenterLabel(const QString &text, QWidget *parent) : QWidget(parent)
 void CenterLabel::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.fillRect(rect(), QColor(0, 0, 0, 200)); // Semi-transparent black background
+    //painter.fillRect(rect(), QColor(0, 0, 0, 200)); // Semi-transparent black background
 }
 
 
