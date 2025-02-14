@@ -1,0 +1,11 @@
+release/CenterLabel.o
+release/Timer.o
+release/circleGen.o
+release/main.o
+release/mainwindow.o
+release/starteroverlay.o
+release/moc_CenterLabel.o
+release/moc_Timer.o
+release/moc_circleGenerator.o
+release/moc_mainwindow.o
+release/moc_starteroverlay.o

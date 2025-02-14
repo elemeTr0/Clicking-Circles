@@ -1,0 +1,11 @@
+debug/CenterLabel.o
+debug/Timer.o
+debug/circleGen.o
+debug/main.o
+debug/mainwindow.o
+debug/starteroverlay.o
+debug/moc_CenterLabel.o
+debug/moc_Timer.o
+debug/moc_circleGenerator.o
+debug/moc_mainwindow.o
+debug/moc_starteroverlay.o
