@@ -4,11 +4,14 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTimer>
+#include <circleGenerator.h>
 #include <QSettings>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), score(0)
 {
+    hits=0;
+    clicks=0;
     // Create central widget and main layout
     QWidget *centralWidget = new QWidget(this);
     QVBoxLayout *mainLayout = new QVBoxLayout(centralWidget);
@@ -24,10 +27,16 @@ MainWindow::MainWindow(QWidget *parent)
     scoreLabel->setAlignment(Qt::AlignLeft);
     topBarLayout->addWidget(scoreLabel);
 
+    // Accuracy Label
+    accuracyLabel = new QLabel("Accuracy: ", this);
+    accuracyLabel->setStyleSheet("font-size: 24px; font-weight: bold; color: white; maring-right:60px"); // Set the font color to white
+    accuracyLabel->setAlignment(Qt::AlignLeft);
+    topBarLayout->addWidget(accuracyLabel);
+
     //Time Label
     timeLabel = new QLabel("60", this);
     timeLabel->setStyleSheet("font-size: 24px; font-weight: bold; color: white;"); // Set the font color to white
-    timeLabel->setAlignment(Qt::AlignCenter);
+    timeLabel->setAlignment(Qt::AlignLeft);
     topBarLayout->addWidget(timeLabel);
 
     //High Score Label
@@ -77,12 +86,16 @@ void MainWindow::updateScore(int points)
 {
     score = qMax(0, score + points); // Ensure score doesn't go below 0
     scoreLabel->setText("Score: " + QString::number(score));
+    Accuracy(hits,clicks);
 }
 
 void MainWindow::onCircleClicked()
 {
     if (isGameActive) {
         updateScore(10); // Add 10 points when a circle is clicked
+        hits++;
+        clicks++;
+        Accuracy(hits,clicks);
     }
 }
 
@@ -90,6 +103,8 @@ void MainWindow::onEmptyClicked()
 {
     if (isGameActive) {
         updateScore(-5); // Subtract 5 points when empty space is clicked
+        clicks++;
+        Accuracy(hits,clicks);
     }
 }
 
@@ -156,4 +171,13 @@ void MainWindow::loadHighscore()
     QSettings settings("YourCompany", "YourGame");
     int highScore = settings.value("highScore", 0).toInt();
     highScoreLabel->setText("High Score: " + QString::number(highScore));
+}
+
+void MainWindow::Accuracy(int hits, int clicks)
+{
+    double accuracy = 0.0; // Initialize to a default value
+    if (clicks > 0) { // Prevent division by zero
+        accuracy = 100.0 * (double)hits / (double)clicks; // Calculate accuracy as a percentage
+    }
+    accuracyLabel->setText("Accuracy: " + QString::number(accuracy, 'f', 2) + "%"); // Set label text, limit to 2 decimal places
 }
